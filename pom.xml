@@ -22,6 +22,7 @@
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.language>java</sonar.language>
+		<sonar.organization>rpcompany</sonar.organization>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -75,7 +76,47 @@
 	</dependencies>
 
 	<build>
+
+		<finalName>app</finalName>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<include>**/*.pem</include>
+				</includes>
+            </resource>
+        </resources>
+
+
+
 		<plugins>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<useUniqueVersions>false</useUniqueVersions>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Filename>${project.artifactId}.${project.packaging}</Implementation-Filename>
+							<Implentation-Nexus-Filename>
+								${project.build.finalName}.${project.packaging}
+							</Implentation-Nexus-Filename>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -99,6 +140,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+
+				<executions>
+					<execution>
+						<id>maven-plugin-repackage</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+
 				<configuration>
 					<excludes>
 						<exclude>
